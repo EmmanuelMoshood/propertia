@@ -4,6 +4,7 @@ import morgan from "morgan";
 import cors from "cors";
 import {DATABASE} from "./config.js";
 import mongoose from "mongoose";
+import authRoutes from "./routes/auth.js"
 
 const app = express();
 
@@ -20,9 +21,10 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
 
-// routes
-app.get("/api", (req, res) => {
-  res.json({ data: "hello world from nodejs api" });
-});
+//to use router as middleware
+app.use('/api', authRoutes);
+
+
+
 
 app.listen(3000, () => console.log("Server running in port 3000"));
