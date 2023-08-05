@@ -5,8 +5,11 @@ const router = express.Router();
 
 
 
-//api page
+// get home page
 router.get("/", authControllers.welcomeMsg)
+
+// where newuser is verified
+router.post("/pre-register", authControllers.preRegister )
 
 
 export default router;
