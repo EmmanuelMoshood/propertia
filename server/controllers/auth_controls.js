@@ -148,20 +148,28 @@ export const login = async (req, res) => {
 
 
 export const forgotPassword = async (req, res) => {
+  console.log("forgot password controller was called")
   try{
     const { email } = req.body;
+    
 
     //query your database to see if any user with that email exist.
-    const userWithThatEmail = await findOne({ email })
+    const user = await User.findOne({ email });
+    console.log(user) 
 
     //If yes, then you can send a link to their email.
-    if(userWithThatEmail){
+    if(!user){
+      res.json({ error: "Could not find user with that email" });
+    }
+    else
+    {
       //reset user code and save the code in the db
       const resetCode = nanoid()
-      userWithThatEmail.resetCode = resetCode;
+      user.resetCode = resetCode;
+      user.save();
 
       //generate a new token based on the reset code of the user
-      const token = jwt.sign({ resetCode}, config.JWT_SECRET, { expiresIn: "1hr"})
+      const token = jwt.sign({resetCode}, config.JWT_SECRET, { expiresIn: "1hr"})
 
       //send email using aws with the resetcode token
       const emailSubject = "reset your password here"
@@ -169,21 +177,19 @@ export const forgotPassword = async (req, res) => {
                             <p>Please click the link below to access-acount </p>
                             <a href="${config.CLIENT_URL}/auth/access-acount/${token}">Access your account</a>
                           `
-      config.AWSSES.sendEmail(emailTemplate(userWithThatEmail, emailContent, config.REPLY_TO, emailSubject), (err, data) =>{
+      config.AWSSES.sendEmail(emailTemplate(email, emailContent, config.REPLY_TO, emailSubject), (err, data) =>{
         if(err){
           console.log(err)
-          return res.json({ ok: false});
+          return res.json({ error: "Provide a valid email address" });
         } else {
-          console.log(data)
-          return res.json({ ok: true})
+          return res.json({ error: "Check email to access your account" });
         }
       })
 
-    }else {
-      return res.json({ error: "Email doesnt exist in the database"})
     }
 
   } catch (err) {
-
+    console.log(err);
+    res.json({ error: "Something went wrong when trying to handle forgot password." });
   }
 }
