@@ -37,9 +37,9 @@ const schema = new Schema(
     },
     enquiredProperties: [{ type: ObjectId, ref: "Ad" }],
     wishlist: [{ type: ObjectId, ref: "Ad" }],
-    resetCode: "",
+    resetCode: String,
   },
-  { timestamps: true } //automatically include the create and update time to the database
+  { timestamps: true }
 );
 
 export default model("User", schema);

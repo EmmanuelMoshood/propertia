@@ -4,7 +4,7 @@ import morgan from "morgan";
 import cors from "cors";
 import {DATABASE} from "./config.js";
 import mongoose from "mongoose";
-import authRoutes from "./routes/auth.js"
+import authRoutes from "./routes/auth_routes.js"
 
 const app = express();
 
