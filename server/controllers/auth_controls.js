@@ -12,7 +12,7 @@ import jwt from "jsonwebtoken"
 //import nanoid to create unique usernames
 import {nanoid} from "nanoid"
 
-//
+//library for validating user inputs
 import validator from "email-validator"
 
 //business logics 
@@ -20,7 +20,7 @@ import validator from "email-validator"
 export const welcomeMsg = (req, res) =>{
     res.json(testData)};
 
-//use new user data to create tokena and send link to email
+//use new user data to create token and send link to email
 export const preRegister = async (req, res) => {
     // create jwt with email and password then email as clickable link
     // only when user click on that email link, registeration completes
@@ -67,9 +67,8 @@ export const preRegister = async (req, res) => {
         } catch (err) {
           console.log(err);
         }
-      };
-        
-
+};
+    
 
 export const register = async (req, res) => {
   try{
@@ -107,6 +106,84 @@ export const register = async (req, res) => {
     console.log(err)
     return res.json({ error: "something went wrong registering the user"})
   }
-}
+};
   
     
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    // 1. find user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json({ error: "Please register first" });
+    }
+    // 2. compare password
+    const match = await comparePassword(password, user.password);
+    if (!match) {
+      return res.json({
+        error: "Wrong password",
+      });
+    }
+    // 3. create jwt tokens
+    const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+    const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+      expiresIn: "30d",
+    });
+    // 4. send user and token as response excluding password
+    user.password = undefined;
+    user.resetCode = undefined;
+
+    res.json({
+      user,
+      token,
+      refreshToken,
+    });
+  } catch (err) {
+    console.log(err);
+    res.json({ error: "Something went wrong with login." });
+  }
+};
+
+
+export const forgotPassword = async (req, res) => {
+  try{
+    const { email } = req.body;
+
+    //query your database to see if any user with that email exist.
+    const userWithThatEmail = await findOne({ email })
+
+    //If yes, then you can send a link to their email.
+    if(userWithThatEmail){
+      //reset user code and save the code in the db
+      const resetCode = nanoid()
+      userWithThatEmail.resetCode = resetCode;
+
+      //generate a new token based on the reset code of the user
+      const token = jwt.sign({ resetCode}, config.JWT_SECRET, { expiresIn: "1hr"})
+
+      //send email using aws with the resetcode token
+      const emailSubject = "reset your password here"
+      const emailContent = `
+                            <p>Please click the link below to access-acount </p>
+                            <a href="${config.CLIENT_URL}/auth/access-acount/${token}">Access your account</a>
+                          `
+      config.AWSSES.sendEmail(emailTemplate(userWithThatEmail, emailContent, config.REPLY_TO, emailSubject), (err, data) =>{
+        if(err){
+          console.log(err)
+          return res.json({ ok: false});
+        } else {
+          console.log(data)
+          return res.json({ ok: true})
+        }
+      })
+
+    }else {
+      return res.json({ error: "Email doesnt exist in the database"})
+    }
+
+  } catch (err) {
+
+  }
+}

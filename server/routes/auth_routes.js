@@ -8,11 +8,17 @@ const router = express.Router();
 // get home page
 router.get("/", authControllers.welcomeMsg);
 
-// where newuser is verified
+// on user signup 
 router.post("/pre-register", authControllers.preRegister );
 
-// register, after token is created
+// register, after email token is created
 router.post("/register", authControllers.register);
+
+// on user login
+router.post("/login", authControllers.login);
+
+// on clicking forgot-password, ask user for email
+router.post("/forgot-password", authControllers.forgotPassword)
 
 
 export default router;
