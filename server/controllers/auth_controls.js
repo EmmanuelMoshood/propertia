@@ -192,4 +192,37 @@ export const forgotPassword = async (req, res) => {
     console.log(err);
     res.json({ error: "Something went wrong when trying to handle forgot password." });
   }
-}
+};
+
+
+export const accessAccount = async (req, res) => {
+  try {
+    // verify token and check expiry
+    const { restCode } = jwk.verify(req.body.resetCode, config.JWT_SECRET)
+
+    //make resetCode work just once
+    const user = await User.findOneAndUpdate({restCode}, {restCode : ""});
+
+    // generate token
+    const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+    // generate refresh token
+    const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+      expiresIn: "30d",
+    });
+
+    //reset user passwd and resetcode
+    user.password = undefined;
+    user.resetCode = undefined;
+    return res.json({
+      token,
+      refreshToken,
+      user,
+    })
+
+  }catch (err) {
+    console.log(err);
+    return res.json({ error: "Something went wrong, trying to access account"})
+  }
+};

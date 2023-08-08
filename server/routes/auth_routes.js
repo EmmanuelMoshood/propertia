@@ -18,7 +18,10 @@ router.post("/register", authControllers.register);
 router.post("/login", authControllers.login);
 
 // on clicking forgot-password, ask user for email
-router.post("/forgot-password", authControllers.forgotPassword)
+router.post("/forgot-password", authControllers.forgotPassword);
+
+// after receiving link in email to activate forgotten password 
+router.post("/access-account", authControllers.accessAccount);
 
 
 export default router;
