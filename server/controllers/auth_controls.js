@@ -52,18 +52,21 @@ export const preRegister = async (req, res) => {
           <a href="${config.CLIENT_URL}/auth/activate/${token}">Activate</a>
         `
 
-        config.AWSSES.sendEmail(
-          emailTemplate(email, emailBody, config.REPLY_TO, emailSubject),
-            (err, data) => {
-              if (err) {
-                console.log("Provide a valid email address", err);
-                return res.json({ ok: false });
-              } else {
-                console.log("Check email to complete registration", data);
-                return res.json({ ok: true });
+        config.sendAWSEmail(
+            (
+              emailTemplate(email, emailBody, config.REPLY_TO, emailSubject),
+              (err, data) => {
+                if (err) {
+                  console.log("Provide a valid email address", err);
+                  return res.json({ ok: false });
+                } else {
+                  console.log("Check email to complete registration", data);
+                  return res.json({ ok: true });
+                }
               }
-            }
-          );
+            )
+          )
+        
         } catch (err) {
           console.log(err);
         }
@@ -177,14 +180,14 @@ export const forgotPassword = async (req, res) => {
                             <p>Please click the link below to access-acount </p>
                             <a href="${config.CLIENT_URL}/auth/access-acount/${token}">Access your account</a>
                           `
-      config.AWSSES.sendEmail(emailTemplate(email, emailContent, config.REPLY_TO, emailSubject), (err, data) =>{
+      config.sendAWSEmail((emailTemplate(email, emailContent, config.REPLY_TO, emailSubject), (err, data) =>{
         if(err){
           console.log(err)
           return res.json({ error: "Provide a valid email address" });
         } else {
           return res.json({ error: "Check email to access your account" });
         }
-      })
+      }))
 
     }
 
