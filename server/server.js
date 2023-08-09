@@ -17,7 +17,7 @@ mongoose
 .catch((error) => console.log(`error in connecting to db: "${error}`));
 
 // middlewares
-app.use(express.json());
+app.use(express.json()); //converts body in request to json
 app.use(morgan("dev"));
 app.use(cors());
 

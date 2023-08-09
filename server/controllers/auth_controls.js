@@ -198,10 +198,10 @@ export const forgotPassword = async (req, res) => {
 export const accessAccount = async (req, res) => {
   try {
     // verify token and check expiry
-    const { restCode } = jwk.verify(req.body.resetCode, config.JWT_SECRET)
+    const { resetCode } = jwt.verify(req.body.resetCode, config.JWT_SECRET)
 
     //make resetCode work just once
-    const user = await User.findOneAndUpdate({restCode}, {restCode : ""});
+    const user = await User.findOneAndUpdate({resetCode}, {resetCode : ""});
 
     // generate token
     const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
