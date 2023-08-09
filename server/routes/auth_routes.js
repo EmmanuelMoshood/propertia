@@ -1,12 +1,13 @@
 import express from "express";
 import * as authControllers from "../controllers/auth_controls.js";
+import { requireSignin } from "../middlewares/auth_middlewares.js";
 
 const router = express.Router();
 
 
 
 // get home page
-router.get("/", authControllers.welcomeMsg);
+router.get("/", requireSignin, authControllers.welcomeMsg);
 
 // on user signup 
 router.post("/pre-register", authControllers.preRegister );
@@ -23,5 +24,7 @@ router.post("/forgot-password", authControllers.forgotPassword);
 // after receiving link in email to activate forgotten password 
 router.post("/access-account", authControllers.accessAccount);
 
+// routes/auth
+router.get("/refresh-token", authControllers.refreshToken);
 
 export default router;

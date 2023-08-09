@@ -212,3 +212,30 @@ export const accessAccount = async (req, res) => {
     return res.json({ error: "Something went wrong, trying to access account"})
   }
 };
+
+export const refreshToken = async (req, res) => {
+  try {
+    // console.log("you hit refresh token endpoint => ", req.headers);
+
+    const { _id } = jwt.verify(req.headers.refresh_token, config.JWT_SECRET);
+
+    const user = await User.findById(_id);
+    const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+    const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+      expiresIn: "365d",
+    });
+    // send user and token as response excluding password
+    user.password = undefined;
+    user.resetCode = undefined;
+    res.json({
+      user,
+      token,
+      refreshToken,
+    });
+  } catch (err) {
+    console.log("===> ", err.name);
+    return res.status(403).json({ error: "Refresh token failed" }); // 403 is important
+  }
+};
