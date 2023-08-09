@@ -15,6 +15,36 @@ import {nanoid} from "nanoid"
 //library for validating user inputs
 import validator from "email-validator"
 
+/************************************************************************/
+
+const respondUserDataAndTokensToClient = (user, res ) => {
+  const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+    expiresIn: "1d",
+  });
+  const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+    expiresIn: "30d",
+  });
+  // 4. send user and token as response excluding password
+  user.password = undefined;
+  user.resetCode = undefined;
+
+  //generated tokens and user data are return so that the client can store and use these tokens for authentication and future API requests.
+    //dont want to send even the hashed password to the client, so set the value to undefined same with the resetCode
+  res.json({
+    user,
+    token,
+    refreshToken,
+  });
+}
+
+
+
+
+
+
+
+
+
 //business logics 
 //read home page data
 export const welcomeMsg = (req, res) =>{
@@ -84,23 +114,8 @@ export const register = async (req, res) => {
       password: hashedPassword,
     }).save();
 
-    //to be used to identify the user during their session.
-    const token = jwt.sign({_id: user._id}, config.JWT_SECRET, {
-      expiresIn: "1h",
-    })
-    const refreshToken = jwt.sign({_id: user._id}, config.JWT_SECRET, {
-      expiresIn: "7d",
-    });
-
-    //generated tokens and user data are return so that the client can store and use these tokens for authentication and future API requests.
-      //dont want to send even the hashed password to the client, so set the value to undefined same with the resetCode
-      user.password = undefined;
-      user.resetCode = undefined;
-    return res.json({
-      token,
-      refreshToken,
-      user
-    })
+    respondUserDataAndTokensToClient(user, res);
+   
 
   } catch (err) { 
     console.log(err)
@@ -125,21 +140,8 @@ export const login = async (req, res) => {
       });
     }
     // 3. create jwt tokens
-    const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
-      expiresIn: "1d",
-    });
-    const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
-      expiresIn: "30d",
-    });
-    // 4. send user and token as response excluding password
-    user.password = undefined;
-    user.resetCode = undefined;
+    respondUserDataAndTokensToClient(user, res)
 
-    res.json({
-      user,
-      token,
-      refreshToken,
-    });
   } catch (err) {
     console.log(err);
     res.json({ error: "Something went wrong with login." });
@@ -203,23 +205,7 @@ export const accessAccount = async (req, res) => {
     //make resetCode work just once
     const user = await User.findOneAndUpdate({resetCode}, {resetCode : ""});
 
-    // generate token
-    const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
-      expiresIn: "1d",
-    });
-    // generate refresh token
-    const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
-      expiresIn: "30d",
-    });
-
-    //reset user passwd and resetcode
-    user.password = undefined;
-    user.resetCode = undefined;
-    return res.json({
-      token,
-      refreshToken,
-      user,
-    })
+    respondUserDataAndTokensToClient(user, res);
 
   }catch (err) {
     console.log(err);
