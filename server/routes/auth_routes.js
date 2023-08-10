@@ -27,8 +27,11 @@ router.post("/access-account", authControllers.accessAccount);
 // get new tokens
 router.get("/refresh-token", authControllers.refreshToken);
 
-//get logged in user
+// get logged in user data privately
 router.get("/current-user", requireSignin, authControllers.currentUser)
+
+// get user data publicly 
+router.get("/profile/:username", authControllers.publicProfile)
 
 
 

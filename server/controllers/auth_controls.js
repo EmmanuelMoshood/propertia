@@ -213,6 +213,7 @@ export const accessAccount = async (req, res) => {
   }
 };
 
+
 export const refreshToken = async (req, res) => {
   try {
     // console.log("you hit refresh token endpoint => ", req.headers);
@@ -237,5 +238,31 @@ export const refreshToken = async (req, res) => {
   } catch (err) {
     console.log("===> ", err.name);
     return res.status(403).json({ error: "Refresh token failed" }); // 403 is important
+  }
+};
+
+
+export const currentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    user.password = undefined;
+    user.resetCode = undefined;
+    res.json(user);
+  } catch (err) {
+    console.log(err);
+    return res.status(403).json({ error: "Unauthorized" });
+  }
+};
+
+
+export const publicProfile = async (req, res) => {
+  try {
+    const user = await User.findOne({username: req.params.username});
+    user.password = undefined;
+    user.resetCode = undefined;
+    res.json(user);
+  } catch (err) {
+    console.log(err);
+    return res.status(403).json({ error: err });
   }
 };
