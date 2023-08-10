@@ -266,3 +266,58 @@ export const publicProfile = async (req, res) => {
     return res.status(403).json({ error: err });
   }
 };
+
+
+// name username company image phone about
+export const updateUserProfile = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        ...req.body,
+      },
+      { new: true }
+    );
+
+    user.password = undefined;
+    user.resetCode = undefined;
+    res.json(user);
+  } catch (err) {
+    console.log(err);
+    if (err.codeName === "DuplicateKey") {
+      return res.status(403).json({ error: "Username is taken" });
+    } else {
+      return res.status(403).json({ error: "Unauhorized" });
+    }
+  }
+};
+
+
+export const updateUserPassword = async (req, res) => {
+  try {
+    const { password } = req.body;
+
+    if (!password) {
+      return res.json({ error: "Password is required" });
+    }
+
+    // check if password meets the requirement
+    if (password && password?.length < 6) {
+      return res.json({
+        error: "Min 6 characters long password is required",
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+    const hashedPassword = await hashPassword(password);
+
+    await User.findByIdAndUpdate(user._id, {
+      password: hashedPassword,
+    });
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.log(err);
+    return res.status(403).json({ error: "Unauthorized" });
+  }
+};

@@ -6,13 +6,13 @@ const router = express.Router();
 
 
 
-// get home page
+// read home page
 router.get("/", requireSignin, authControllers.welcomeMsg);
 
-// on user signup 
+// create new user, pre-registration phase
 router.post("/pre-register", authControllers.preRegister );
 
-// register, after email token is created
+// create and  save new user
 router.post("/register", authControllers.register);
 
 // on user login
@@ -27,12 +27,17 @@ router.post("/access-account", authControllers.accessAccount);
 // get new tokens
 router.get("/refresh-token", authControllers.refreshToken);
 
-// get logged in user data privately
+// read logged in user data privately
 router.get("/current-user", requireSignin, authControllers.currentUser)
 
-// get user data publicly 
+// read user data publicly 
 router.get("/profile/:username", authControllers.publicProfile)
 
+// update user profile
+router.put("/update-user-profile", requireSignin, authControllers.updateUserProfile)
+
+// update user password
+router.put("/update-user-password", requireSignin, authControllers.updateUserPassword)
 
 
 
