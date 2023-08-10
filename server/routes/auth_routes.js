@@ -24,7 +24,11 @@ router.post("/forgot-password", authControllers.forgotPassword);
 // after receiving link in email to activate forgotten password 
 router.post("/access-account", authControllers.accessAccount);
 
-// routes/auth
+// 
 router.get("/refresh-token", authControllers.refreshToken);
+
+
+
+
 
 export default router;

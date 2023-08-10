@@ -226,7 +226,7 @@ export const refreshToken = async (req, res) => {
     const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
       expiresIn: "365d",
     });
-    // send user and token as response excluding password
+    // send user and tokens as response excluding password and resetCode
     user.password = undefined;
     user.resetCode = undefined;
     res.json({
