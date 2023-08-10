@@ -2,9 +2,10 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import {DATABASE} from "./config.js";
+import {DATABASE, PORT} from "./config.js";
 import mongoose from "mongoose";
 import authRoutes from "./routes/auth_routes.js"
+
 
 const app = express();
 
@@ -27,4 +28,4 @@ app.use('/api', authRoutes);
 
 
 
-app.listen(3000, () => console.log("Server running in port 3000"));
+app.listen(PORT, () => console.log(`Server running in port ${PORT}`));
