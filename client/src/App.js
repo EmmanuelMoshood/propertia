@@ -1,14 +1,26 @@
-import './bootstrap.css';
-// import '../src/'
+// App.js
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-function App() {
+// pages
+import Home from "./pages/Home_page";
+import Register from "./pages/Register_page";
+import Login from "./pages/Login_page";
+
+// components
+import {Navbar} from "./components/Navbar";
+
+export default function App() {
   return (
-    <div className="">
-      <header className="">
-       <h1 className= "display-1 bg-primary text-light" >Hello React</h1>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Navbar ></Navbar>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
+
+    
   );
 }
-
-export default App;
