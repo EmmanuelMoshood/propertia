@@ -1,7 +1,9 @@
 import { useState, createContext, useContext } from "react"; 
 
+//create context
 const AuthContext = createContext(); 
 
+//create a provider component
 const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState({user:null, token:"", refreshToken:""});
 
