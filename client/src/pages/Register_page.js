@@ -4,9 +4,11 @@ import { useState } from "react";
 // hppt client
 import axios from "axios";
 
-//API
+//API connection
 import {API} from "../config"
 
+// error handling
+import toast from "react-hot-toast"
 
 
 //components
@@ -30,8 +32,16 @@ export default function Register() {
             const {data} = res;
             console.log(data)
 
+            if(data?.error){
+                toast.error(data.error);
+            } else {
+                toast.success('Please check your email to activate your account')
+            }
+
         }catch(err){
             console.log(err)
+            toast.error("Pre-registration error");
+
         }
     }
  

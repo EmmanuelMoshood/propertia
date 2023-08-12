@@ -2,6 +2,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 //to use global state
 import { AuthProvider } from "./context/auth";
+//to handle errors from API request
+import { Toaster } from "react-hot-toast"
 
 // pages
 import Home from "./pages/Home_page";
@@ -16,6 +18,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Navbar />
+      <Toaster />
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Home />} />
