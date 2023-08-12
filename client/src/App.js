@@ -9,6 +9,7 @@ import Login from "./pages/Login_page";
 // components
 import {Navbar} from "./components/Navbar";
 
+
 export default function App() {
   return (
     <BrowserRouter>
