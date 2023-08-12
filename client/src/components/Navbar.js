@@ -1,37 +1,36 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 export const Navbar = (props) => {
     return (
         <nav className="navbar navbar-expand-lg bg-body-tertiary">
             <div className="container-fluid">
-                <a className="navbar-brand" href="#">Navbar</a>
+                <NavLink className="navbar-brand" to="#">PROPERTIA</NavLink>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor04" aria-controls="navbarColor04" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarColor04">
                 <ul className="navbar-nav me-auto">
                     <li className="nav-item">
-                    <a className="nav-link active" href="#">Home
+                    <NavLink className="nav-link" to="/">Home
                         <span className="visually-hidden">(current)</span>
-                    </a>
+                    </NavLink>
                     </li>
                     <li className="nav-item">
-                    <a className="nav-link" href="#">Features</a>
+                    <NavLink className="nav-link" to="/login">Login</NavLink>
                     </li>
                     <li className="nav-item">
-                    <a className="nav-link" href="#">Pricing</a>
+                    <NavLink className="nav-link" to="/register">Register</NavLink>
                     </li>
                     <li className="nav-item">
-                    <a className="nav-link" href="#">About</a>
+                    <NavLink className="nav-link" to="/about">About</NavLink>
                     </li>
                     <li className="nav-item dropdown">
-                    <a className="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                    <NavLink className="nav-link dropdown-toggle" data-bs-toggle="dropdown" to="#" >User</NavLink>
                     <div className="dropdown-menu">
-                        <a className="dropdown-item" href="#">Action</a>
-                        <a className="dropdown-item" href="#">Another action</a>
-                        <a className="dropdown-item" href="#">Something else here</a>
-                        <div className="dropdown-divider"></div>
-                        <a className="dropdown-item" href="#">Separated link</a>
+                        <NavLink className="nav-link" to="/dashboard">Dashboard</NavLink>
+                        <NavLink className="nav-link" to="#">Membership</NavLink>
+                        <NavLink className="nav-link" to="/logout">Log Out</NavLink>
                     </div>
                     </li>
                 </ul>
