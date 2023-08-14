@@ -1,7 +1,22 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../context/auth";
+
 
 export const Navbar = (props) => {
+    //context
+    const [auth, setAuth] = useAuth();
+
+    
+
+    const logOut = () => {
+        setAuth({ user:null, token:"", refreshToken:""});
+        localStorage.removeItem('auth');
+    }
+
+    
+
+
     return (
         <nav className="navbar navbar-expand-lg bg-body-tertiary">
             <div className="container-fluid">
@@ -30,7 +45,7 @@ export const Navbar = (props) => {
                     <div className="dropdown-menu">
                         <NavLink className="nav-link" to="/dashboard">Dashboard</NavLink>
                         <NavLink className="nav-link" to="#">Membership</NavLink>
-                        <NavLink className="nav-link" to="/logout">Log Out</NavLink>
+                        <NavLink className="nav-link" to="/login" onClick={logOut}>Log Out</NavLink>
                     </div>
                     </li>
                 </ul>

@@ -14,6 +14,8 @@ import Register from "./pages/Register_page";
 import Login from "./pages/Login_page";
 import EmailSent from "./pages/EmailSent_page";
 import AccountActivate from "./pages/auth/AccountActivate";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import AccessAccount from "./pages/auth/AccessAccount"
 
 
 
@@ -21,16 +23,18 @@ import AccountActivate from "./pages/auth/AccountActivate";
 export default function App() {
   return (
     <BrowserRouter>
-      <Navbar />
+      
       <Toaster />
       <AuthProvider>
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/activate-account" element={<EmailSent />} />
           <Route path="/auth/activate/:token" element={<AccountActivate />} />
-
+          <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+          <Route path="/auth/access-account/:token" element={<AccessAccount />} />
 
         </Routes>
       </AuthProvider>

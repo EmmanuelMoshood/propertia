@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast"
 import axios from "axios";
 import { API } from "../../config";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate,  } from "react-router-dom";
 import { useAuth } from "../../context/auth";
 
 //to grab params from url
@@ -23,14 +23,14 @@ export default function AccountActivate() {
     //change state
     useEffect(()=>{
         if(token){
-            requestActivationToken();
+            requestAccess();
         }
     }, [token]);
 
-    const requestActivationToken = async () => {
+    const requestAccess = async () => {
         try {
             //make http request with token in the body
-            const {data} = await axios.post(`${API}/register`, {token})
+            const {data} = await axios.post(`${API}/access-account`, {resetCode : token})
             if(data?.error){
                 toast.error(data.error)
             } else {
@@ -38,12 +38,12 @@ export default function AccountActivate() {
                 localStorage.setItem("auth", JSON.stringify(data))
                 //save data in context
                 setAuth(data)
-                toast.success('Successfully logged in')
+                toast.success('You can update password in profile page')
                 navigate("/"); 
             }
         } catch (err) {
             console.log(err)
-            toast.error(err)
+            toast.error("client failed to request access___", err)
         }
     }
 
@@ -56,7 +56,7 @@ export default function AccountActivate() {
 
     return(
         <div className="display-1  d-flex justify-content-center align-item-center vh-100" style={{marginTop: '10%'}}>
-            <h1>completing user registration...</h1>
+            <h1>logging in...</h1>
         </div>
     )
 }

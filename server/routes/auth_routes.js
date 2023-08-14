@@ -39,6 +39,13 @@ router.put("/update-user-profile", requireSignin, authControllers.updateUserProf
 // update user password
 router.put("/update-user-password", requireSignin, authControllers.updateUserPassword)
 
+//test endpoint
+router.get('/test', (req, res) => {
+    res.send('Hello from the test endpoint!');
+    console.log("test request worked")
+  });
+
+
 
 
 export default router;

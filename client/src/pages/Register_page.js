@@ -22,42 +22,45 @@ import { useNavigate } from "react-router-dom";
 
 
 export default function Register() {
+  
+    //context
+      
+  
     //state
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState("");
-    const [loading, setLoading] = useState(false)
+    const [isLoading, setisLoading] = useState(false)
 
     //hooks
     const navigate = useNavigate(); 
 
-    //context
-    // useAuth.user.firstName = firstName; 
 
     // onSubmit
     const handleSubmit = async (e) => {
         try{
-            setLoading (true)
+            setisLoading (true)
             e.preventDefault();
             // console.table({ email, password })
 
+            //make http request with email and password in the body
             const res = await axios.post(`${API}/pre-register`, {email, password}) 
             const {data} = res;
             console.log(data)
 
             if(data?.error){
                 toast.error(data.error);
-                setLoading(false)
+                setisLoading(false)
             } else {
                 toast.success('Please check your email to activate your account')
-                setLoading(false)
+                setisLoading(false)
                 navigate("/activate-account")
             }
 
         }catch(err){
             console.log(err)
             toast.error("Pre-registration error");
-            setLoading(false)
+            setisLoading(false)
         }
     }
  
@@ -116,11 +119,11 @@ export default function Register() {
  
             <button 
                 type="submit" 
-                disabled= {loading}
+                disabled= {isLoading}
                 className="btn 
                 btn-primary mt-4" 
                 fdprocessedid="hnwth">
-                    {loading ? "Waiting..." : "Register"}
+                    {isLoading ? "Waiting..." : "Register"}
             </button>
           </fieldset>
         </form>

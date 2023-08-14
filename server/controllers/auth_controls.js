@@ -19,7 +19,7 @@ import validator from "email-validator"
 
 const respondUserDataAndTokensToClient = (user, res ) => {
   const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "1d"
   });
   const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
     expiresIn: "30d",
@@ -151,6 +151,7 @@ export const login = async (req, res) => {
 
 export const forgotPassword = async (req, res) => {
   console.log("forgot password controller was called")
+  
   try{
     const { email } = req.body;
     
@@ -171,20 +172,21 @@ export const forgotPassword = async (req, res) => {
       user.save();
 
       //generate a new token based on the reset code of the user
-      const token = jwt.sign({resetCode}, config.JWT_SECRET, { expiresIn: "1hr"})
+      const token = jwt.sign({resetCode}, config.JWT_SECRET, { expiresIn: "1d"})
 
       //send email using aws with the resetcode token
       const emailSubject = "reset your password here"
       const emailContent = `
                             <p>Please click the link below to access-acount </p>
-                            <a href="${config.CLIENT_URL}/auth/access-acount/${token}">Access your account</a>
+                            <a href="${config.CLIENT_URL}/auth/access-account/${token}">Access your account</a>
                           `
       config.AWSSES.sendEmail(emailTemplate(email, emailContent, config.REPLY_TO, emailSubject), (err, data) =>{
         if(err){
           console.log(err)
           return res.json({ error: "Provide a valid email address" });
         } else {
-          return res.json({ error: "Check email to access your account" });
+          console.log(data)
+          return res.json({ success: "Check email to access your account" });
         }
       })
 
@@ -197,22 +199,56 @@ export const forgotPassword = async (req, res) => {
 };
 
 
+// export const accessAccount = async (req, res) => {
+//   try {
+//     // verify token and check expiry
+//     const { resetCode } = jwt.verify(req.body.resetCode, config.JWT_SECRET)
+
+//     //make resetCode work just once
+//     const user = await User.findOneAndUpdate({resetCode}, {resetCode : ""});
+
+//     respondUserDataAndTokensToClient(user, res);
+
+//   }catch (err) {
+//     console.log(err);
+//     return res.json({ error: "server___ issue trying to access account"})
+//   }
+// };
+
 export const accessAccount = async (req, res) => {
   try {
     // verify token and check expiry
-    const { resetCode } = jwt.verify(req.body.resetCode, config.JWT_SECRET)
+    const { resetCode } = jwt.verify(req.body.token, config.JWT_SECRET);
 
-    //make resetCode work just once
-    const user = await User.findOneAndUpdate({resetCode}, {resetCode : ""});
+    const user = await User.findOneAndUpdate(
+      { resetCode },
+      { resetCode: "" }
+    );
 
-    respondUserDataAndTokensToClient(user, res);
+    console.log("user", user, resetCode);
+    // return;
 
-  }catch (err) {
+    // generate token
+    const token = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+    // generate refresh token
+    const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
+      expiresIn: "30d",
+    });
+
+    user.password = undefined;
+    user.resetCode = undefined;
+    return res.json({
+      token,
+      refreshToken,
+      user,
+    });
+  } catch (err) {
     console.log(err);
-    return res.json({ error: "Something went wrong, trying to access account"})
+    res.json({ error: "Expired or invalid token. Try again." });
   }
 };
-
 
 export const refreshToken = async (req, res) => {
   try {
@@ -225,7 +261,7 @@ export const refreshToken = async (req, res) => {
       expiresIn: "7d",
     });
     const refreshToken = jwt.sign({ _id: user._id }, config.JWT_SECRET, {
-      expiresIn: "365d",
+      expiresIn: "30d",
     });
     // send user and tokens as response excluding password and resetCode
     user.password = undefined;

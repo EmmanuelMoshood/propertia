@@ -7,7 +7,8 @@ export default function EmailSent() {
    
     return (
         <div className="container col-6 mt-5">
-            <h1>Hi 'User', a link has been sent to your email to activate your account</h1>
+            <h1>Hi 'User', </h1>
+            <h3>a link has been sent to your email</h3>
         </div>
     )
 }
