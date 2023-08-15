@@ -150,35 +150,40 @@ export const login = async (req, res) => {
 
 
 export const forgotPassword = async (req, res) => {
-  console.log("forgot password controller was called")
+  console.log("forgot password____called")
   
   try{
+    //get email from payload sent with the request
     const { email } = req.body;
     
 
-    //query your database to see if any user with that email exist.
+    //find a user with that email
     const user = await User.findOne({ email });
-    console.log(user) 
 
-    //If yes, then you can send a link to their email.
+    //if user doesnt exist, say "Could not find user with that email"
     if(!user){
       res.json({ error: "Could not find user with that email" });
     }
     else
     {
-      //reset user code and save the code in the db
+      //else create a temporary reset code for the user
       const resetCode = nanoid()
+
+      //then generate a token using the temp reset code, jwt secret and expiration of 60m
+      const token = jwt.sign({resetCode}, config.JWT_SECRET, { expiresIn: "60m"})
+      console.log("FORGOT PASSWORD TOKEN___", token);
+
+      //now add the reset code to user and save in the db
       user.resetCode = resetCode;
       user.save();
+      
 
-      //generate a new token based on the reset code of the user
-      const token = jwt.sign({resetCode}, config.JWT_SECRET, { expiresIn: "1d"})
-
-      //send email using aws with the resetcode token
+      //send a link via aws emailservive
+        //link is url + route + token created 
       const emailSubject = "reset your password here"
       const emailContent = `
                             <p>Please click the link below to access-acount </p>
-                            <a href="${config.CLIENT_URL}/auth/access-account/${token}">Access your account</a>
+                            <a href='${config.CLIENT_URL}/auth/access-account/${token}'>Access your account</a>
                           `
       config.AWSSES.sendEmail(emailTemplate(email, emailContent, config.REPLY_TO, emailSubject), (err, data) =>{
         if(err){
@@ -194,7 +199,7 @@ export const forgotPassword = async (req, res) => {
 
   } catch (err) {
     console.log(err);
-    res.json({ error: "Something went wrong when trying to handle forgot password." });
+    res.json({ error: "server error trying to handle forgot password." });
   }
 };
 

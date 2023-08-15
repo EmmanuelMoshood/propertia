@@ -29,8 +29,8 @@ export default function AccountActivate() {
 
     const requestAccess = async () => {
         try {
-            //make http request with token in the body
-            const {data} = await axios.post(`${API}/access-account`, {resetCode : token})
+            //make http POSR request with token in the body as payload
+            const {data} = await axios.post(`${API}/access-account`, {token})
             if(data?.error){
                 toast.error(data.error)
             } else {

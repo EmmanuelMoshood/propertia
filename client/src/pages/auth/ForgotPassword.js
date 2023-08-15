@@ -31,11 +31,10 @@ export default function ForgotPassword() {
         //stop default submission behaviour
         e.preventDefault();
         try {
-          //send POST req to server at /forgot-password endpoint
+          //send POST req to server at /forgot-password endpoint with email as payload
           console.log("forgot-password___________________")
-          const res = await axios.post(`${API}/forgot-password`, {
-              email
-          });
+          const res = await axios.post(`${API}/forgot-password`, {email});
+
           const {data} = res;
           console.log(data)
 

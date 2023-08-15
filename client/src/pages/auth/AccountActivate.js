@@ -29,7 +29,7 @@ export default function AccountActivate() {
 
     const requestActivationToken = async () => {
         try {
-            //make http request with token in the body
+            //make http request with token in the body as payload
             const {data} = await axios.post(`${API}/register`, {token})
             if(data?.error){
                 toast.error(data.error)
