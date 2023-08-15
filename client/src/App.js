@@ -16,6 +16,7 @@ import EmailSent from "./pages/EmailSent_page";
 import AccountActivate from "./pages/auth/AccountActivate";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import AccessAccount from "./pages/auth/AccessAccount"
+import Dashboard from "./pages/user/Dashboard";
 
 
 
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/auth/activate/:token" element={<AccountActivate />} />
           <Route path="/auth/forgot-password" element={<ForgotPassword />} />
           <Route path="/auth/access-account/:token" element={<AccessAccount />} />
+          <Route path="/dashboard" element={<Dashboard/>} />
 
         </Routes>
       </AuthProvider>
