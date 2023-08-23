@@ -2,7 +2,8 @@ import React from "react";
 import { useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { GOOGLE_PLACES_KEY } from "../../config";
-import CurrencyInput from 'react-currency-input-field';
+import CurrencyInput from "react-currency-input-field";
+import ImageUpload from "./ImageUpload"
 
 //function will have 2 props to make it reusable 
 export default function AdForm ({action, type}){
@@ -24,9 +25,10 @@ export default function AdForm ({action, type}){
 
     return (
       <>
-        <div className="mb-3 form-control">
+        <ImageUpload ad={ad} setAd={setAd} />
+        <div className="mb-3 mt-3 form-control">
           <GooglePlacesAutocomplete
-            apiKey={GOOGLE_PLACES_KEY}
+            apiKey={GOOGLE_PLACES_KEY} 
             apiOptions={{ region: "ca" }}
             selectProps={{
               defaultInputValue: ad?.address,
@@ -34,7 +36,7 @@ export default function AdForm ({action, type}){
               onChange: ({ value }) => {
                 // console.log("address onchange => ", value.description);
                 setAd({ ...ad, address: value.description });
-              },
+              }, 
             }}
           />
         </div>
@@ -98,6 +100,8 @@ export default function AdForm ({action, type}){
           placeholder="Write description"
           onChange={(e) => setAd({ ...ad, description: e.target.value })}
         />
+
+
 
         <button className="btn btn-primary">Submit</button>
         <pre>{JSON.stringify(ad, null, 4)}</pre>
