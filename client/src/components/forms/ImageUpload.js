@@ -1,19 +1,48 @@
-
-
+import Resizer from "react-image-file-resizer"
+import axios from "axios"
 
 export default function ImageUpload({ ad, setAd }) {
     
-    const handleUpload = (e) => {
-      let files = e.target.files;
-      files = [...files];
-      if (files?.length) {
-        setAd({ ...ad, uploading: true });
-        //make a req to backend
-        console.log(files)
-      } else {
-        setAd({ ...ad, uploading: false });
-      }
-    };
+    // components/forms/ImageUpload.js
+  const handleUpload = (e) => {
+    let files = e.target.files;
+    files = [...files];
+    if (files?.length) {
+      setAd({ ...ad, uploading: true });
+
+      //reduce the size of each file
+      files.map((f) => {
+        new Promise((resolve) => {
+          Resizer.imageFileResizer(
+            f,
+            1080,
+            720,
+            "JPEG",
+            100,
+            0,
+            async (uri) => {
+              try {
+                const { data } = await axios.post("/upload-image", {
+                  image: uri,
+                });
+                setAd((prev) => ({
+                  ...prev,
+                  photos: [data, ...prev.photos],
+                  uploading: false,
+                }));
+              } catch (err) {
+                console.log("photo upload err => ", err);
+                setAd({ ...ad, uploading: false });
+              }
+            },
+            "base64"
+          );
+        });
+      });
+    } else {
+      setAd({ ...ad, uploading: false });
+    }
+  };
   
     const handleDelete = async (photo) => {
       setAd({ ...ad, uploading: true });
