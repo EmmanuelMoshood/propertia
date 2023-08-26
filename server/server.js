@@ -5,6 +5,7 @@ import cors from "cors";
 import {DATABASE, PORT} from "./config.js";
 import mongoose from "mongoose";
 import authRoutes from "./routes/auth_routes.js"
+import adsRoutes from "./routes/ads_routes.js"
 
 
 const app = express();
@@ -22,8 +23,9 @@ app.use(express.json()); //converts body in request to json
 app.use(morgan("dev"));
 app.use(cors());
 
-//to use router as middleware
+//to use my routers as middleware
 app.use('/api', authRoutes);
+app.use('/api', adsRoutes);
 
 
 

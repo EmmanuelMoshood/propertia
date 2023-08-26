@@ -1,3 +1,36 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+.main-boby{
+    width: 100%;
+    height: 100vh;
+}
+
+/* Home_page search section */
+.cover-container{
+    overflow: hidden;
+    border-radius: 1rem;
+    margin: auto;
+    margin-top: 1rem;
+}
+.background-serach {
+    background-color: #f0f0f0; /* Set the background color */
+    background-image: url("./assests/images/coverImage.jpg"); 
+    background-size: cover; /* Adjust the image size */
+    background-repeat: no-repeat; /* Prevent image repetition */
+    background-position: center center; /* Center the image */
+    width: 900px;
+    height: 200px;
+}
+.search-title{
+    margin-top: 1rem;
+    text-align: center;
+    font-weight: 700;
+}
+
+
+/* Home_page search result */
+.search-result {
+    width: 90%;
+    height: 60vh;
+    margin: auto;
+    margin-top: 2rem;
+    background-color: #f0f0f0;
+}
